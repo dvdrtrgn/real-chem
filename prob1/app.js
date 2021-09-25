@@ -2,25 +2,29 @@ import { dumpToPage, getPageProp } from './helpers.js';
 
 // https://www.mediawiki.org/wiki/API:Images
 
-// getPageProp().then(dumpToPage);
-// getPageProp("File:03 ALBERT EINSTEIN.ogg", 'imageinfo').then(dumpToPage);
-
 function pluck(arr = [''], prop) {
   return arr.map(e => e[prop] || `missing ${prop} info`);
 }
 
-async function process() {
-  let images = await getPageProp('New Jersey');
+async function process(page) {
+  dumpToPage('... searching ...', page);
+
+  let images = await getPageProp(page, 'images');
   let list = pluck(images, 'title');
-  dumpToPage(list)
 
   for (let i = 0; i < list.length; i++) {
-    let page = list[i];
-    let info = await getPageProp(page, 'imageinfo');
+    dumpToPage(i, '')
 
+    let image = list[i];
+    let info = await getPageProp(image, 'imageinfo');
     let user = pluck(info, 'user')[0];
-    dumpToPage(user)
+
+    list[i] = {
+      image, user
+    };
   }
+
+  dumpToPage(list)
 }
 
-process();
+process('New Jersey');

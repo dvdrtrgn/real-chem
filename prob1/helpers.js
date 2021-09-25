@@ -1,10 +1,10 @@
 const DUMP = document.querySelector('#dump');
 
-export function dumpToPage(obj) {
+export function dumpToPage(obj, div = '<br>') {
   console.log(obj);
   const str = JSON.stringify(obj, null, 2);
   const out = typeof obj === 'string' ? obj : str;
-  DUMP.innerHTML += '<br>' + out;
+  DUMP.innerHTML += div + out;
 }
 
 export function getPrimaryPage(obj) {
@@ -12,7 +12,7 @@ export function getPrimaryPage(obj) {
   return pages[Object.keys(pages)[0]];
 }
 
-export async function getPageProp(titles = 'Albert Einstein', prop = 'images') {
+export async function getPageProp(titles, prop) {
   let url = "https://en.wikipedia.org/w/api.php?";
   const params = {
     origin: '*',
