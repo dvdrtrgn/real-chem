@@ -1,7 +1,11 @@
 const DUMP = document.querySelector('#dump');
 
 export function dumpToPage(obj, div = '<br>') {
-  console.log(obj);
+  if (obj === 'clear') {
+    DUMP.innerHTML = '';
+    obj = '... searching ...';
+  }
+
   const str = JSON.stringify(obj, null, 2);
   const out = typeof obj === 'string' ? obj : str;
   DUMP.innerHTML += div + out;
@@ -18,6 +22,7 @@ export async function getPageProp(titles, prop) {
     origin: '*',
     action: 'query',
     format: 'json',
+    imlimit: 99,
     prop,
     titles,
   };

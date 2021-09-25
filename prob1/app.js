@@ -7,7 +7,7 @@ function pluck(arr = [''], prop) {
 }
 
 async function process(page) {
-  dumpToPage('... searching ...', page);
+  dumpToPage('clear', page);
 
   let images = await getPageProp(page, 'images');
   let list = pluck(images, 'title');
@@ -26,5 +26,13 @@ async function process(page) {
 
   dumpToPage(list)
 }
+
+const form = document.querySelector('#search');
+const title = document.querySelector('#title');
+
+form.addEventListener('submit', function (evt) {
+  evt.preventDefault();
+  process(title.value);
+});
 
 process('New Jersey');
