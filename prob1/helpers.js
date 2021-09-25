@@ -1,6 +1,7 @@
 const DUMP = document.querySelector('#dump');
 
 export function dumpToPage(obj) {
+  console.log(obj);
   const str = JSON.stringify(obj, null, 2);
   const out = typeof obj === 'string' ? obj : str;
   DUMP.innerHTML += '<br>' + out;
