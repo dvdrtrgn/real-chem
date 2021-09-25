@@ -1,35 +1,30 @@
 // https://www.mediawiki.org/wiki/API:Images
 
-/*
-    get_page_images.js
+function getPrimaryPage(obj) {
+  const pages = obj.query.pages;
 
-    MediaWiki API Demos
-    Demo of `Images` module: Send a GET request to obtain a JSON
-  object listing all of the image files embedded on a single page
+  return pages[Object.keys(pages)[0]];
+}
 
-    MIT License
-*/
+async function getPageProp(titles = 'Albert Einstein', prop = 'images') {
+  let url = "https://en.wikipedia.org/w/api.php?";
 
-var url = "https://en.wikipedia.org/w/api.php";
+  const params = {
+    origin: '*',
+    action: 'query',
+    format: 'json',
+    prop,
+    titles,
+  };
 
-var params = {
-  action: "query",
-  prop: "images",
-  titles: "Albert Einstein",
-  format: "json"
-};
+  Object.keys(params).forEach(key => url += `&${key}=${params[key]}`);
 
-url = url + "?origin=*";
-Object.keys(params).forEach(function (key) { url += "&" + key + "=" + params[key]; });
+  return await fetch(url)
+    .then(response => response.json())
+    .then(function (response) {
+      return getPrimaryPage(response)[prop];
+    })
+    .catch(console.error);
+}
 
-fetch(url)
-  .then(function (response) { return response.json(); })
-  .then(function (response) {
-    var pages = response.query.pages;
-    for (var page in pages) {
-      for (var img of pages[page].images) {
-        console.log(img.title);
-      }
-    }
-  })
-  .catch(function (error) { console.log(error); });
+getPageProp("File:03 ALBERT EINSTEIN.ogg", 'imageinfo').then(console.log);
