@@ -31,8 +31,10 @@ async function process(pageName) {
   const users = pluckUsers(imageinfo)
 
   dumpToPage(titleList.map((image, i) => {
+    const user = users[i];
     return {
-      image, user: users[i]
+      image: `<a href=https://en.wikipedia.org/wiki/${encodeURI(image)}>${image}</a>`,
+      user: `<a href=https://en.wikipedia.org/wiki/User:${encodeURI(user)}>${user}</a>`,
     };
   }))
 }
