@@ -6,25 +6,35 @@ function pluck(arr = [''], prop) {
   return arr.map(e => e[prop] || `missing ${prop} info`);
 }
 
-async function process(page) {
-  dumpToPage('clear', page);
+function pluckUsers(pages) {
+  const list = Object.values(pages);
+  let users = pluck(list, 'imageinfo');
 
-  let images = await getPageProp(page, 'images');
-  let list = pluck(images, 'title');
+  users = pluck(users, '0');
+  users = pluck(users, 'user');
 
-  for (let i = 0; i < list.length; i++) {
-    dumpToPage(i, '')
+  return users;
+}
 
-    let image = list[i];
-    let info = await getPageProp(image, 'imageinfo');
-    let user = pluck(info, 'user')[0];
+function getPrimaryPage(pages) {
+  return Object.values(pages)[0];
+}
 
-    list[i] = {
-      image, user
+async function process(pageName) {
+  dumpToPage('clear', pageName);
+
+  const page = await getPageProp(pageName, 'images');
+  const images = getPrimaryPage(page)['images'];
+  const titleList = pluck(images, 'title');
+  const titlesWad = encodeURIComponent(titleList.join('|'));
+  const imageinfo = await getPageProp(titlesWad, 'imageinfo');
+  const users = pluckUsers(imageinfo)
+
+  dumpToPage(titleList.map((image, i) => {
+    return {
+      image, user: users[i]
     };
-  }
-
-  dumpToPage(list)
+  }))
 }
 
 const form = document.querySelector('#search');

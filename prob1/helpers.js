@@ -11,18 +11,16 @@ export function dumpToPage(obj, div = '<br>') {
   DUMP.innerHTML += div + out;
 }
 
-export function getPrimaryPage(obj) {
-  const pages = obj.query.pages;
-  return pages[Object.keys(pages)[0]];
+export function getPages(obj) {
+  return obj.query.pages;
 }
 
 export async function getPageProp(titles, prop) {
-  let url = "https://en.wikipedia.org/w/api.php?";
+  let url = 'https://en.wikipedia.org/w/api.php?origin=*';
   const params = {
-    origin: '*',
     action: 'query',
     format: 'json',
-    imlimit: 99,
+    imlimit: 50,
     prop,
     titles,
   };
@@ -32,7 +30,7 @@ export async function getPageProp(titles, prop) {
   return await fetch(url)
     .then(response => response.json())
     .then(function (response) {
-      return getPrimaryPage(response)[prop];
+      return getPages(response);
     })
     .catch(console.error);
 }
