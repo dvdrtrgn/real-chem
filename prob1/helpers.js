@@ -1,16 +1,3 @@
-const DUMP = document.querySelector('#dump');
-
-export function dumpToPage(obj, div = '<br>') {
-  if (obj === 'clear') {
-    DUMP.innerHTML = '';
-    obj = '... searching ...';
-  }
-
-  const str = JSON.stringify(obj, null, 2);
-  const out = typeof obj === 'string' ? obj : str;
-  DUMP.innerHTML += div + out;
-}
-
 export function getPages(obj) {
   return obj.query.pages;
 }
@@ -33,4 +20,38 @@ export async function getPageProp(titles, prop) {
       return getPages(response);
     })
     .catch(console.error);
+}
+
+
+function pluck(arr = [''], prop) {
+  return arr.map(e => e[prop] || `missing ${prop} info`);
+}
+
+function pluckUsers(pages) {
+  const list = Object.values(pages);
+  let users = pluck(list, 'imageinfo');
+
+  users = pluck(users, '0');
+  users = pluck(users, 'user');
+
+  return users;
+}
+
+function getPrimaryPage(pages) {
+  return Object.values(pages)[0];
+}
+
+export async function process(pageName) {
+  const page = await getPageProp(pageName, 'images');
+  const images = getPrimaryPage(page)['images'];
+  const titleList = pluck(images, 'title');
+  const titlesWad = encodeURIComponent(titleList.join('|'));
+
+  const imageinfo = await getPageProp(titlesWad, 'imageinfo');
+  const users = pluckUsers(imageinfo)
+
+  return titleList.map((image, i) => {
+    const user = users[i];
+    return { image, user };
+  });
 }

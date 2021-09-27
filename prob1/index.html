@@ -6,6 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real Chem</title>
+  <script src="https://unpkg.com/vue@3.2.6"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -13,10 +15,7 @@
     list of all current images on the [New Jersey] page with the
     username (if any) of the account that uploaded each image.</p>
 
-  <form id="search" action=".">
-    <input id="title" placeholder="Search Wikipedia"> [max 50]
-  </form>
-  <pre id="dump"></pre>
+  <div id="app"></div>
 
   <script type="module" src="app.js"></script>
 </body>
